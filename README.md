@@ -6,4 +6,4 @@ Post-quantification (tertiary) analysis of single-cell RNA-seq data involves a n
 
 ## Current specifications
 
-
+* [Clustering](clustering.md) ([Discussion](clustering_discussion.md))

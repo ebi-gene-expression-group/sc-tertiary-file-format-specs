@@ -1,84 +1,32 @@
 # Cell cluster definitions
 
-## Motivation
+Many tools in single-cell RNA seq analysis define clusters at some point of their workflow. This specification defines a format to be used to specify those clusters. This is an example format to be used as the basis for discusssion and ratification by the community. 
 
-Many tools in single-cell RNA seq analysis define clusters at some point of their workflow. The manner and mechanism in which those definitions are stored is the subject of this document, which will become a specification.
+## Scope
 
-## Opening questions
+This is a 'consumer level' format. That is, it is likely to be used as the end product of clustering workflows. We expect that internal to a workflow, clusters will be stored as part of the overall project schema (e.g. in Loom, R objects etc).
 
-### Is an isolated clustering specification desirable?
+## Format
 
-Clustering specifications are simple compared to e.g. trajectories, potentially just a two-column table. This being the case, is a clustering format specification desirable at all? If clusters are effectively just cell-wise metadata, would effort perhaps be better spent in standardising cell-wise metadata in the specifications used for expression matrices?
-
-### Should metadata be stored along with clustering definitions?
-
-Clustering is a complex process with diverse methods having diverse parameterisations. Understanding clustering outputs requires some understanding of thos parameterisations. Does this mean we should package clustering method metadata along with the cluster definitions? This is probably a consideration that should be kept separate given its complexity, but the question deserves to be asked.
-
-### Should we allow for probabilistic cluster assignment of cells?
-
-It is easy to imagine methods that assign cells to clusters with less than 100 percent certainty, which would allow for cells to part of multiple clusters with different probabilities. Is this something we should bake into any specification?
-
-## Format possibilities
-
-The following are possible directions for a clustering specification (assuming an isolated format is deemed necessary- see above). 
-
-### Option 1: minimal two-column csv
-
-Simple definintion to define clusters only, in one definition only.
+Suggested cluster specification is simply:
 
 ```
-Cell,cluster
-cell_1,cluster_2
-cell_2,cluster_1
-cell_3,cluster_2
-cell_4,cluster_3
-cell_5,cluster_1
+Cell    clustering_1   clustering_2,...
+cell_1  cluster_2    cluster_3,
+cell_2  cluster_1    cluster_2,
+cell_3  cluster_2    cluster_1,
+cell_4  cluster_3    cluster_2,
+cell_5  cluster_1    cluster_1,
 ...
 ```
 
-Questions:
+This example illustrates the following design decisions:
 
-* Do we even need a header?
-* Does this even need a specification?
+* A tab-separated file with cells by row and clusterings by column.
+* Format to store cluster assignments only. Specification of clusters as part of a trajectory-centric format was considered but rejected.
+* No probalistic assignment necessary since this is not currently a common feature of tools.
+* Multiple cluster assignments to be allowed based on different methods or parameterisations.
 
-Rules:
 
-* Cell and cluster names should not contain commas
 
-### Option 2: store multiple cluster definitions in one file
-
-There may be a case for storing multiple cluster definitions in one file, for example from multiple parameterisations of the same method:
-
-```
-Cell,cluster_k_2,cluster_k_3
-cell_1,cluster_2,cluster_1
-cell_2,cluster_1,cluster_3
-cell_3,cluster_1,cluster_2
-cell_4,cluster_2,cluster_3
-cell_5,cluster_2,cluster_1
-...
-```
-
-Questions:
-
-* There would be complexity here- for example in defining the metadata behind each parameterisation. Is this desirable?
-
-### Option 3: probabilistic assignments
-
-If cells are proabilitically assigned to multiple clusters the format looks like:
-
-```
-Cell,cluster,prob
-cell_1,cluster_2,0.8
-cell_1,cluster_3,0.2
-cell_2,cluster_1,1
-cell_3,cluster_1,0.3
-cell_3,cluster_3,0.3
-cell_3,cluster_2,0.4
-cell_4,cluster_2,0.5
-cell_4,cluster_3,0.5
-cell_5,cluster_2,1
-```
-
-Clearly this option precludes option 2.
 
